@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kwestionariusz Współpracy Trenerskiej</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .step-content { display: none; }
+        .step-content.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        input, textarea, select { background: #334155 !important; border: 1px solid #475569 !important; color: white !important; }
+        input:focus, textarea:focus { border-color: #38bdf8 !important; outline: none; ring: 2px #38bdf8; }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; margin-right: 10px; vertical-align: middle; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="min-h-screen py-10 px-4">
+    <div class="max-w-3xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-white mb-2 tracking-tight">KWESTIONARIUSZ <span class="text-blue-500">WSPÓŁPRACY</span></h1>
+            <p class="text-slate-400">Wypełnij dokładnie poniższe pola, abyśmy mogli przygotować Twój plan.</p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="mb-8 px-2">
+            <div class="flex justify-between mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <span id="progress-text">Krok 1 z 4</span>
+                <span id="progress-percent">25%</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-2">
+                <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: 25%"></div>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form id="cooperation-form" class="glass rounded-3xl p-8 shadow-2xl">
+            <!-- Tutaj wstaw swój URL z Google Apps Script po wdrożeniu -->
+            <input type="hidden" id="script-url" value="">
+            
+            <!-- STEP 1: Podstawowe -->
+            <div class="step-content active" data-step="1">
+                <h2 class="text-2xl font-bold mb-6 flex items-center"><span class="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm">01</span> Dane Podstawowe</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Imię i Nazwisko</label>
+                        <input type="text" name="name" required class="w-full p-3 rounded-xl" placeholder="Jan Kowalski">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Data urodzenia / Wiek</label>
+                        <input type="text" name="age" required class="w-full p-3 rounded-xl" placeholder="np. 28 lat">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Wzrost (cm)</label>
+                        <input type="number" name="height" required class="w-full p-3 rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Masa ciała (kg)</label>
+                        <input type="number" step="0.1" name="weight" required class="w-full p-3 rounded-xl">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium mb-2">Charakter pracy</label>
+                        <select name="job_type" class="w-full p-3 rounded-xl">
+                            <option value="siedzaca">Siedząca</option>
+                            <option value="mieszana">Mieszana / Lekka fizyczna</option>
+                            <option value="fizyczna">Fizyczna / Bardzo aktywna</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: Zdrowie -->
+            <div class="step-content" data-step="2">
+                <h2 class="text-2xl font-bold mb-6 flex items-center"><span class="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm">02</span> Zdrowie</h2>
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Kontuzje i bóle</label>
+                        <textarea name="injuries" rows="2" class="w-full p-3 rounded-xl"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Leki i suplementy</label>
+                        <textarea name="meds" rows="2" class="w-full p-3 rounded-xl"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Badania krwi (kiedy ostatnio?)</label>
+                        <input type="text" name="blood_tests" class="w-full p-3 rounded-xl">
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: Styl życia -->
+            <div class="step-content" data-step="3">
+                <h2 class="text-2xl font-bold mb-6 flex items-center"><span class="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm">03</span> Styl życia</h2>
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Nawyki żywieniowe</label>
+                        <textarea name="diet" rows="2" class="w-full p-3 rounded-xl"></textarea>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Sen (ilość i jakość)</label>
+                            <input type="text" name="sleep" class="w-full p-3 rounded-xl">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Nawodnienie (L/dzień)</label>
+                            <input type="text" name="water" class="w-full p-3 rounded-xl">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Poziom stresu (1-10)</label>
+                        <input type="range" name="stress" min="1" max="10" value="5" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4: Trening -->
+            <div class="step-content" data-step="4">
+                <h2 class="text-2xl font-bold mb-6 flex items-center"><span class="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm">04</span> Cel</h2>
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-blue-400">CEL GŁÓWNY</label>
+                        <input type="text" name="goal" required class="w-full p-3 rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Staż treningowy</label>
+                        <input type="text" name="experience" class="w-full p-3 rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Dostępność (dni w tyg.)</label>
+                        <input type="text" name="availability" class="w-full p-3 rounded-xl">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between mt-10">
+                <button type="button" id="prevBtn" class="px-8 py-3 rounded-xl bg-slate-700 hover:bg-slate-600 font-bold transition-colors invisible">Wstecz</button>
+                <button type="button" id="nextBtn" class="px-8 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 font-bold transition-all shadow-lg">Dalej</button>
+                <button type="submit" id="submitBtn" class="px-8 py-3 rounded-xl bg-green-600 hover:bg-green-500 font-bold transition-all hidden">
+                    Wyślij Odpowiedź
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modals -->
+    <div id="successModal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden">
+        <div class="glass p-10 rounded-3xl text-center max-w-sm mx-4">
+            <div class="text-5xl mb-4">💪</div>
+            <h3 class="text-2xl font-bold mb-2">Dzięki!</h3>
+            <p class="text-slate-400 mb-6">Dane zostały zapisane w arkuszu trenera.</p>
+            <button onclick="location.reload()" class="w-full py-3 bg-blue-600 rounded-xl font-bold">Ok</button>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('cooperation-form');
+        const steps = document.querySelectorAll('.step-content');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        let currentStep = 1;
+
+        function updateUI() {
+            steps.forEach(step => {
+                step.classList.remove('active');
+                if(parseInt(step.dataset.step) === currentStep) step.classList.add('active');
+            });
+            const percent = (currentStep / steps.length) * 100;
+            progressBar.style.width = percent + '%';
+            progressText.innerText = `Krok ${currentStep} z ${steps.length}`;
+            prevBtn.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+            if (currentStep === steps.length) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+        }
+
+        nextBtn.addEventListener('click', () => {
+            const currentInputs = steps[currentStep-1].querySelectorAll('input[required]');
+            let valid = true;
+            currentInputs.forEach(i => { if(!i.value) { i.style.borderColor = 'red'; valid = false; } else { i.style.borderColor = ''; } });
+            if (valid && currentStep < steps.length) { currentStep++; updateUI(); }
+        });
+
+        prevBtn.addEventListener('click', () => { if (currentStep > 1) { currentStep--; updateUI(); } });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = document.getElementById('script-url').value;
+            
+            // Jesli nie podpięto skryptu, pokazujemy info w konsoli i sukces wizualny
+            if(!url) {
+                console.log("Dane (testowo):", Object.fromEntries(new FormData(form)));
+                submitBtn.innerHTML = '<span class="loader"></span> Wysyłanie...';
+                setTimeout(() => document.getElementById('successModal').classList.remove('hidden'), 1000);
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loader"></span> Wysyłanie...';
+
+            try {
+                const formData = new FormData(form);
+                await fetch(url, { method: 'POST', body: formData, mode: 'no-cors' });
+                document.getElementById('successModal').classList.remove('hidden');
+            } catch (err) {
+                alert("Wystąpił błąd podczas wysyłania. Spróbuj ponownie.");
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Wyślij Odpowiedź";
+            }
+        });
+    </script>
+</body>
+</html>
